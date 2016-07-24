@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="1.0"
+    android:keepScreenOn="true"
+    >
+<TextView
+    android:id="@+id/text_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="0.5"
+    android:text=""
+    android:textSize="20sp"
+    />
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:layout_weight="0.5"
+    android:weightSum="1.0">
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text=" &lt;&lt; "
+        android:layout_weight="0.5"
+        android:onClick="onPrevButton"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.5"
+        android:text=" &gt;&gt; "
+        android:onClick="onNextButton"
+        />
+    </LinearLayout>
+</LinearLayout>
+
