@@ -1,5 +1,6 @@
 bin/
 gen/
-libs/
+lib/
 obj/
 release.keystore
+R.java

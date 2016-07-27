@@ -1,23 +1,35 @@
-JAVA_HOME = C:/Program Files/Java/jdk1.6.0_26
-ANDROID_HOME = C:/Program Files/Android/android-sdk
-DEV_HOME = C:/Users/johnd/dev/AndroidTest
+ANDROID_HOME = ~/apps/android-sdk-linux
+DEV_HOME = ~/workspace/Teutons
 
-build: compile make_apt sign_apt align_apt
+debug: compile make_apt sign_apt_debug
+release: compile make_apt sign_apt_release align_apt
 
 compile:
-	ANDROID_HOME/platform-tools/aapt package -v -f -m -S DEV_HOME/res -J DEV_HOME/src -M DEV_HOME/AndroidManifest.xml -I ANDROID_HOME/platforms/android-7/android.jar
-	JAVA_HOME/bin/javac -verbose -d DEV_HOME/obj -classpath ANDROID_HOME/platforms/android-7/android.jar;DEV_HOME/obj -sourcepath DEV_HOME/src DEV_HOME/src/com/mycompany/package1/*.java
-	ANDROID_HOME/platform-tools/dx --dex --verbose --output=DEV_HOME/bin/classes.dex DEV_HOME/obj DEV_HOME/lib
+	$(ANDROID_HOME)/build-tools/23.0.3/aapt package -v -f -m -S $(DEV_HOME)/res -J $(DEV_HOME)/src -M $(DEV_HOME)/AndroidManifest.xml -I $(ANDROID_HOME)/platforms/android-23/android.jar
+	java -jar $(ANDROID_HOME)/build-tools/23.0.3/jack.jar --classpath $(DEV_HOME)/lib/android.jar --output-dex $(DEV_HOME)/obj --import-resource $(DEV_HOME)/res $(DEV_HOME)/src/ $(DEV_HOME)/gen
 
 make_apt:
-	ANDROID_HOME/platform-tools/aapt package -v -f -M DEV_HOME/AndroidManifest.xml -S DEV_HOME/res -I ANDROID_HOME/platforms/android-7/android.jar -F DEV_HOME/bin/AndroidTest.unsigned.apk DEV_HOME/bin
+	$(ANDROID_HOME)/build-tools/23.0.3/aapt package -v -f -M $(DEV_HOME)/AndroidManifest.xml -S $(DEV_HOME)/res -I $(ANDROID_HOME)/platforms/android-23/android.jar -F $(DEV_HOME)/bin/Teutons.unsigned.apk
+	jar -uf $(DEV_HOME)/bin/Teutons.unsigned.apk -C $(DEV_HOME)/obj classes.dex
 
-sign_apt:
-	JAVA_HOME/bin/jarsigner -verbose -keystore DEV_HOME/AndroidTest.keystore -storepass password -keypass password -signedjar DEV_HOME/bin/AndroidTest.signed.apk DEV_HOME/bin/AndroidTest.unsigned.apk AndroidTestKey
+sign_apt_debug:
+	jarsigner -verbose -keystore ~/.android/debug.keystore -storepass android -keypass android -signedjar $(DEV_HOME)/bin/Teutons.signed.apk $(DEV_HOME)/bin/Teutons.unsigned.apk AndroidDebugKey
+
+sign_apt_release:
+	jarsigner -verbose -keystore DEV_HOME/release.keystore -storepass password -keypass password -signedjar DEV_HOME/bin/AndroidTest.signed.apk DEV_HOME/bin/Teutons.unsigned.apk AndroidTestKey
 
 align_apt:
-	ANDROID_HOME/tools/zipalign -v -f 4 DEV_HOME/bin/AndroidTest.signed.apk DEV_HOME/bin/AndroidTest.apk
+	ANDROID_HOME/tools/zipalign -v -f 4 DEV_HOME/bin/Teutons.signed.apk DEV_HOME/bin/Teutons.apk
 
 install_in_emulator:
-	ANDROID_HOME/platform-tools/adb shell rm /data/app/com.mycompany.package1.apk
-	ANDROID_HOME/platform-tools/adb -e install DEV_HOME/bin/AndroidTest.apk
+	ANDROID_HOME/platform-tools/adb shell rm /data/app/com.bps.teutons.apk
+	ANDROID_HOME/platform-tools/adb -e install DEV_HOME/bin/Teutons.apk
+
+do_jill:
+	java -jar $(ANDROID_HOME)/build-tools/23.0.3/jill.jar --output $(DEV_HOME)/lib/android.jar $(ANDROID_HOME)/platforms/android-23/android.jar
+
+clean:
+	rm -rf $(DEV_HOME)/obj/*
+	rm -rf $(DEV_HOME)/bin/*
+	rm -rf $(DEV_HOME)/gen/*
+	rm -rf $(DEV_HOME)/lib/*
