@@ -1,6 +1,6 @@
 ANDROID_HOME = ~/apps/android-sdk-linux
 DEV_HOME = ~/workspace/Teutons
-SDK_VER = 23.0.3
+SDK_VER = 24.0.0
 APP_NAME = Teutons
 APP_PACKAGE = com.bps.teutons
 
